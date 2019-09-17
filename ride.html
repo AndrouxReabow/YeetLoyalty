@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+	<title>Wild Rydes</title>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Serverless web application example">
+	<meta name="author" content="">
+
+
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://js.arcgis.com/4.3/esri/css/main.css">
+	<link rel="stylesheet" href="css/ride.css">
+	<link rel="stylesheet" href="css/message.css">
+</head>
+
+<body>
+	<label>Cost</label>
+	<input id="cost"></input>	
+	<br>
+	<label>Account number</label>
+	<input id="account_number"></input>	
+	<br>
+	<button id="details">Get account details</button>
+	<button id="submit">Confirm transaction</button>
+
+	<script
+			  src="https://code.jquery.com/jquery-3.4.1.min.js"
+			  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+			  crossorigin="anonymous"></script>
+	<script src="js/vendor/jquery-3.1.0.js"></script>
+	<script src="js/vendor/bootstrap.min.js"></script>
+	<script src="js/vendor/aws-cognito-sdk.min.js"></script>
+	<script src="js/vendor/amazon-cognito-identity.min.js"></script>
+	<script src="https://js.arcgis.com/4.3/"></script>
+	<script src="js/config.js"></script>
+	<script src="js/cognito-auth.js"></script>
+	<script src="js/esri-map.js"></script>
+	<script src="js/ride.js"></script>
+
+	<script>
+		WildRydes.authToken.then(function setAuthToken(token) {
+			if (token) {
+				authToken = token;
+			} else {
+				window.location.href = '/signin.html';
+			}
+		}).catch(function handleTokenError(error) {
+			alert(error);
+			window.location.href = '/signin.html';
+		});
+
+		$('button#details').on('click', function() {
+			var accountNumber = $('input#account_number').val();
+			var request = $.ajax({
+				method: 'GET',
+				url: _config.api.invokeUrl + '/customer/' + accountNumber,
+				headers: { Authorization: authToken	},
+				contentType: 'application/json',
+			});
+			request.done(function(response) {
+				console.log(response);
+			})
+			request.fail(function(response) {
+				console.error(response);
+			})
+		});
+	</script>
+</body>
+
+</html>
