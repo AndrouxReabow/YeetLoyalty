@@ -69,6 +69,26 @@
 				console.error(response);
 			})
 		});
+
+		$('button#submit').on('click', function() {
+			var data = {
+				id: $('input#account_number').val(),
+				amount: $('input#cost').val(),
+			};
+			var request = $.ajax({
+				method: 'POST',
+				data: JSON.stringify(data),
+				url: _config.api.invokeUrl + '/transaction/',
+				headers: { Authorization: authToken	},
+				contentType: 'application/json',
+			});
+			request.done(function(response) {
+				console.log(response);
+			})
+			request.fail(function(response) {
+				console.error(response);
+			})
+		});
 	</script>
 </body>
 
